@@ -74,6 +74,7 @@ public class Test {
         System.out.println(test2_2);
         System.out.println("******************************");
         System.out.println("Задание 3");
+        System.out.println("Коробка 1");
         Box box1=new Box();
         box1.add(new Apple());
         box1.add(new Apple());
@@ -82,7 +83,7 @@ public class Test {
         float box1Weight=box1.getWeight();
         System.out.format("Вес коробки 1: %f",box1Weight);
         System.out.println();
-
+        System.out.println("Коробка 2");
         Box box2=new Box();
         box2.add(new Orange());
         box2.add(new Orange());
@@ -105,6 +106,7 @@ public class Test {
         }
         box1.move(box2);
 
+        System.out.println("Коробка 3");
         Box box3=new Box();
         box3.add(new Orange());
         box3.add(new Orange());
