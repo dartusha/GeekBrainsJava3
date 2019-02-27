@@ -72,5 +72,53 @@ public class Test {
         System.out.println("Тип String");
         ArrayList test2_2 = toArrayList(arr2);
         System.out.println(test2_2);
+        System.out.println("******************************");
+        System.out.println("Задание 3");
+        Box box1=new Box();
+        box1.add(new Apple());
+        box1.add(new Apple());
+        box1.add(new Apple());
+        box1.add(new Orange());
+        float box1Weight=box1.getWeight();
+        System.out.format("Вес коробки 1: %f",box1Weight);
+        System.out.println();
+
+        Box box2=new Box();
+        box2.add(new Orange());
+        box2.add(new Orange());
+        float box2Weight=box2.getWeight();
+        System.out.format("Вес коробки 2: %f",box2Weight);
+        System.out.println();
+
+        if (box1.compare(box2)){
+            System.out.println("Веса коробок 1 и 2 равны");
+        }
+        else{
+            System.out.println("Веса коробок 1 и 2 не равны");
+        }
+        box2.add(new Orange());
+        if (box1.compare(box2)){
+            System.out.println("Веса коробок 1 и 2 равны");
+        }
+        else{
+            System.out.println("Веса коробок 1 и 2 не равны");
+        }
+        box1.move(box2);
+
+        Box box3=new Box();
+        box3.add(new Orange());
+        box3.add(new Orange());
+        box3.add(new Orange());
+        System.out.format("Вес коробки 2: %f ",box2.getWeight());
+        System.out.format("Вес коробки 3: %f",box3.getWeight());
+        System.out.println();
+        box3.move(box2);
+        System.out.format("Вес коробки 2: %f ",box2.getWeight());
+        System.out.format("Вес коробки 3: %f",box3.getWeight());
+        System.out.println();
+        box2.move(box3);
+        System.out.format("Вес коробки 2: %f ",box2.getWeight());
+        System.out.format("Вес коробки 3: %f",box3.getWeight());
+        System.out.println();
     }
 }
