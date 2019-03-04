@@ -21,23 +21,8 @@ public class AuthServiceImpl implements AuthService {
         return pwd != null && pwd.equals(password);
     }
 
-    public void refresh() throws ClassNotFoundException, SQLException {
-        Class.forName("org.sqlite.JDBC");
-
-        try (Connection connection=DriverManager.getConnection("jdbc:sqlite:userDB.db")){
-            Statement statement=connection.createStatement();
-            ResultSet resultSet=statement.executeQuery("select * from users");
-            while (resultSet.next()){
-                int id=resultSet.getInt("id");
-                String firstName=resultSet.getString("first_name");
-                String lastName=resultSet.getString("last_name");
-                String login=resultSet.getString("login");
-                String password=resultSet.getString("password");
-                System.out.println(login+","+password);
-                users.put(login,password);
-
-            }
-            connection.close();
-        }
+    @Override
+    public void refresh() throws SQLException, ClassNotFoundException {
+        dbWork.refresh(users);
     }
 }

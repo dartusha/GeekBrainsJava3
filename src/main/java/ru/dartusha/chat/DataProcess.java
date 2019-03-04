@@ -1,10 +1,8 @@
 package ru.dartusha.chat;
 
-import javafx.stage.Stage;
-
 public class DataProcess {
     public static Network network;
-    public static String curuser;
+    public static String curUser;
     public static Controller parentController;
     public static String password;
 
@@ -16,8 +14,8 @@ public class DataProcess {
         network = netw;
     }
 
-    public static void setCuruser(String cur) {
-        curuser = cur;
+    public static void setCurUser(String cur) {
+        curUser = cur;
     }
 
     public static String getPassword() {
@@ -28,8 +26,8 @@ public class DataProcess {
         DataProcess.password = password;
     }
 
-    public static String getCuruser() {
-        return curuser;
+    public static String getCurUser() {
+        return curUser;
     }
 
     public  static Network getNetwork(){

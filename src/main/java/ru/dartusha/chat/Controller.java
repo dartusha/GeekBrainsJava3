@@ -3,7 +3,6 @@ package ru.dartusha.chat;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -54,7 +53,6 @@ public class Controller implements Initializable, MessageSender {
     public void initialize(URL location, ResourceBundle resources) {
         messageList = FXCollections.observableArrayList();
         userList = FXCollections.observableArrayList();
-       // userList.addAll("ivan", "petr", "julia"); // пока фмксированный список
         lvUsers.setItems(userList);
     }
 
@@ -66,7 +64,7 @@ public class Controller implements Initializable, MessageSender {
         String text = tfMessage.getText();
         Message msg = null;
 
-        msg = new Message("", DataProcess.getCuruser(), tfMessage.getText());
+        msg = new Message("", DataProcess.getCurUser(), tfMessage.getText());
         submitMessage(msg);
         DataProcess.getNetwork().sendMessage(msg.getText());
         if (text != null && !text.isEmpty()) {
@@ -103,7 +101,7 @@ public class Controller implements Initializable, MessageSender {
         if (message.getText().contains("$USERS:")){
             String[] array = message.getText().substring(18,message.getText().length()).split("\\,");
             for (String cur:array) {
-                if (!DataProcess.getCuruser().equals(cur))
+                if (!DataProcess.getCurUser().equals(cur))
                     userList.add(cur);
             }
 
@@ -126,7 +124,7 @@ public class Controller implements Initializable, MessageSender {
     public void shutdown() {
         try {
             DataProcess.getNetwork().sendMessage(Const.CMD_CLOSED);
-            System.out.println("Client "+DataProcess.getCuruser()+" disconnected");
+            System.out.println("Client "+DataProcess.getCurUser()+" disconnected");
             DataProcess.getNetwork().close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -135,22 +133,15 @@ public class Controller implements Initializable, MessageSender {
     }
 
     public void setUser(){
-
        // txtWelcome.setText("Добро пожаловать в чат, "+);
-        tfUsername.setText(DataProcess.getCuruser());
+        tfUsername.setText(DataProcess.getCurUser());
     }
 
     public void onChangeUsernameClick() throws SQLException {
         String newUsername=tfUsername.getText();
-        String curUser=DataProcess.getCuruser();
+        String curUser=DataProcess.getCurUser();
 
-        try (Connection connection=DriverManager.getConnection("jdbc:sqlite:userDB.db")){
-            //Statement statement=connection.createStatement();
-           // ResultSet resultSet=statement.executeQuery("select 1 from users where username=?");
-            PreparedStatement ps = connection.prepareStatement("select 1 from users where login=?");
-            ps.setString(1, newUsername);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()){
+        if (dbWork.checkUserExists(newUsername)){
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Information");
                 alert.setHeaderText(null);
@@ -158,38 +149,34 @@ public class Controller implements Initializable, MessageSender {
                 alert.showAndWait();
 
                 tfUsername.setText(curUser);
-            }
-            if (!(curUser.equals(tfUsername.getText()))){
-                ps = connection.prepareStatement("update users set login=? where login=?");
-                ps.setString(1, newUsername);
-                ps.setString(2, curUser);
-                ps.execute();
-                Message msg = null;
-                msg = new Message("", curUser, "Пользователь "+curUser+" изменил ник на "+newUsername);
-                submitMessage(msg);
+        }
+        if (!(curUser.equals(tfUsername.getText()))){
+            dbWork.changeUserName(curUser,newUsername);
+            Message msg = null;
+            msg = new Message("", curUser, "Пользователь "+curUser+" изменил ник на "+newUsername);
+            submitMessage(msg);
 
-                DataProcess.getNetwork().sendMessage(Const.CMD_CHANGE_NAME+newUsername);
+            DataProcess.getNetwork().sendMessage(Const.CMD_CHANGE_NAME+newUsername);
+            DataProcess.setCurUser(newUsername);
+            tfUsername.setText(newUsername);
+              // DataProcess.getNetwork().sendMessage(Const.CMD_CLOSED);
+             //   DataProcess.getNetwork().close();
 
-                DataProcess.getNetwork().sendMessage(Const.CMD_CLOSED);
-                DataProcess.getNetwork().close();
+             //   Network network = null;
+             //   try {
+             //       network = new Network(Const.LOCAL_HOST, Const.PORT, (MessageSender) this);
+             //       network.authorize(newUsername,DataProcess.getPassword());
+             //   } catch (IOException e) {
+             //       e.printStackTrace();
+              //  }
+              //  DataProcess.setNetwork(network);
 
-                Network network = null;
-                try {
-                    network = new Network(Const.LOCAL_HOST, Const.PORT, (MessageSender) this);
-                    network.authorize(newUsername,DataProcess.getPassword());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                DataProcess.setNetwork(network);
-                DataProcess.setCuruser(newUsername);
               //  DataProcess.getNetwork().sendMessage("Пользователь "+curUser+" изменил ник на "+newUsername);
              //   DataProcess.getNetwork().sendMessage("$GET_USERS");
-                tfUsername.setText(newUsername);
+
             }
-            connection.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        //} catch (IOException e) {
+        //    e.printStackTrace();
     }
 }
 

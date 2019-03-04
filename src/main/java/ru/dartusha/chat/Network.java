@@ -53,7 +53,6 @@ public class Network implements Closeable {
     }
 
     public void sendMessageToUser(Message message) {
-        // TODO здесь нужно сформировать личное сообщение в понятном для сервера формате
         sendMessage(message.getText());
     }
 

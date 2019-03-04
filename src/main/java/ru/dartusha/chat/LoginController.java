@@ -43,7 +43,7 @@ public class LoginController  implements MessageSender, Initializable  {
             Stage stage = (Stage) btLogin.getScene().getWindow();
             stage.close();
             DataProcess.setNetwork(network);
-            DataProcess.setCuruser(tfLogin.getText());
+            DataProcess.setCurUser(tfLogin.getText());
             DataProcess.getParentController().setUser();
             DataProcess.setPassword(pfPassword.getText());
         } catch (IOException ex) {

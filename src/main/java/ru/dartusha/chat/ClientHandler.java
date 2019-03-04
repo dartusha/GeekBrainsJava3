@@ -16,7 +16,7 @@ public class ClientHandler {
     private final DataInputStream inp;
     private final DataOutputStream out;
     private final ChatServer server;
-    private final String username;
+    private String username;
     private final Socket socket;
 
     public ClientHandler(final String username, final Socket socket, final ChatServer server) throws IOException {

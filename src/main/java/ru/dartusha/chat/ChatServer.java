@@ -54,7 +54,6 @@ public class ChatServer {
                             out.flush();
                             System.out.printf("Authorization for user %s successful%n", username);
                             broadcastUserConnected(username);
-                            //  sendMessage("ivan", "petr", "test");
 
                             Thread serverMsg=
                                     new Thread(new Runnable() {
@@ -85,7 +84,7 @@ public class ChatServer {
                            //out.writeUTF("/auth fails");
                            // out.flush();
                            // socket.close();
-                            startTimer(username, socket);
+                          //  startTimer(username, socket);
                         }
                     } else {
                         System.out.printf("Incorrect authorization message %s%n", authMessage);
@@ -146,7 +145,7 @@ public class ChatServer {
     public void sendMessageAll(String userFrom, String msg) throws IOException {
         for(ClientHandler client : clientHandlerMap.values())
         {
-           if (client.getUsername()!=userFrom) {
+           if (!client.getUsername().equals(userFrom)) {
                client.sendMessage(client.getUsername(), "/a " + msg,userFrom);
            }
         }
@@ -194,8 +193,14 @@ public class ChatServer {
         System.out.println(oldUsername+","+newUsername);
         ClientHandler clientHandler=clientHandlerMap.get(oldUsername);
         clientHandlerMap.put(newUsername, clientHandler);
-        clientHandlerMap.remove(oldUsername);
         authService.refresh();
+
+        /* TODO остается следующая проблема - если мы меняем username, то его нужно менять в clientHandlerMap и в clienthandler
+        и других связанных. Проблема в том что username ключ, и его можно менять добавлением и удалением старого
+        т.е. по сути нужно или "перезайти" клиентом. Или же выделять ник в отдельном поле
+        */
+
+      //  clientHandlerMap.remove(oldUsername);
     }
 }
 
