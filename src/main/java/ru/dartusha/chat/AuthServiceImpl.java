@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class AuthServiceImpl implements AuthService {
 
-    public Map<String, String> users = new HashMap<>();
+    private Map<String, String> users = new HashMap<>();
 
     public AuthServiceImpl() throws ClassNotFoundException, SQLException {
        // users.put("ivan", "123");

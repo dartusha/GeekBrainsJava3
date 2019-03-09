@@ -4,12 +4,18 @@ import java.sql.*;
 import java.util.Map;
 
 public class dbWork {
+    {
+        try {
+            Class.forName("org.sqlite.JDBC");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 
     //1. Добавить в сетевой чат авторизацию через базу данных SQLite.
     public static  void refresh(Map<String, String> users) throws ClassNotFoundException, SQLException {
-        Class.forName("org.sqlite.JDBC");
 
-        try (Connection connection=DriverManager.getConnection("jdbc:sqlite:userDB.db")){
+        try (Connection connection=DriverManager.getConnection(Const.DB_CONNECTION)){
             Statement statement=connection.createStatement();
             ResultSet resultSet=statement.executeQuery("select * from users");
             while (resultSet.next()){
@@ -28,7 +34,7 @@ public class dbWork {
     //2.*Добавить в сетевой чат возможность смены ника.
     public static boolean checkUserExists(String userName) throws SQLException {
         boolean result = false;
-        try (Connection connection = DriverManager.getConnection("jdbc:sqlite:userDB.db")) {
+        try (Connection connection = DriverManager.getConnection(Const.DB_CONNECTION)) {
             //Statement statement=connection.createStatement();
             // ResultSet resultSet=statement.executeQuery("select 1 from users where username=?");
             PreparedStatement ps = connection.prepareStatement("select 1 from users where login=?");
@@ -43,7 +49,7 @@ public class dbWork {
     }
 
     public static void  changeUserName(String oldUserName, String newUserName) throws SQLException {
-            try (Connection connection=DriverManager.getConnection("jdbc:sqlite:userDB.db")){
+            try (Connection connection=DriverManager.getConnection(Const.DB_CONNECTION)){
                 PreparedStatement ps = connection.prepareStatement("update users set login=? where login=?");
                 ps.setString(1, newUserName);
                 ps.setString(2, oldUserName);
