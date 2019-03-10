@@ -16,11 +16,11 @@ public class ClientHandler {
     private final DataInputStream inp;
     private final DataOutputStream out;
     private final ChatServer server;
-    private String username;
+    private User user;
     private final Socket socket;
 
-    public ClientHandler(final String username, final Socket socket, final ChatServer server) throws IOException {
-        this.username = username;
+    public ClientHandler(final User user, final Socket socket, final ChatServer server) throws IOException {
+        this.user = user;
         this.socket = socket;
         this.server = server;
         this.inp = new DataInputStream(socket.getInputStream());
@@ -32,20 +32,21 @@ public class ClientHandler {
                 try {
                     while (!Thread.currentThread().isInterrupted()) {
                         String msg = inp.readUTF();
-                        System.out.printf("Message from user %s: %s%n", username, msg);
+                        System.out.printf("Message from user %s: %s%n", user.login, msg);
                         if (msg.contains("$GET_USERS")){
                             List<String> str= server.getUserList();
                             String sendMsg="$USERS:";
                             for (String st:str){
                                 sendMsg+=st+",";
                             }
-                            server.sendMessage("server",username,sendMsg);
+                          //  server.sendMessage("server",user,sendMsg);
+                            server.sendServerMessageAll("server",sendMsg);
                         }
                         if (msg.equals(Const.CMD_CLOSED)){
-                            System.out.format("Client %s disconnected", username);
+                            System.out.format("Client %s disconnected", user.login);
                             inp.close();
                             out.close();
-                            server.unsubscribeClient(username);
+                            server.unsubscribeClient(user.login);
                             socket.close();
                         }
 
@@ -53,7 +54,7 @@ public class ClientHandler {
                            // System.out.format("Client %s disconnected", username);
                           //  inp.close();
                            // out.close();
-                            server.changeUsername(username,msg.substring(Const.CMD_CHANGE_NAME.length(),msg.length()));
+                            server.changeUsername(user,msg.substring(Const.CMD_CHANGE_NAME.length(),msg.length()));
                            // socket.close();
                         }
 
@@ -61,10 +62,10 @@ public class ClientHandler {
                         if (matcher.matches()) {
                             String userTo = matcher.group(1);
                             String sendMsg= matcher.group(2);
-                            server.sendMessage(username,userTo,sendMsg);
+                            server.sendMessage(user.login,userTo,sendMsg);
                         }
                         else{
-                            server.sendMessageAll(username,msg);
+                            server.sendMessageAll(user.login,msg);
                         }
 
                     }
@@ -75,7 +76,7 @@ public class ClientHandler {
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 } finally {
-                    System.out.printf("Client %s disconnected%n", username);
+                    System.out.printf("Client %s disconnected%n", user.login);
                     try {
                         socket.close();
                       //  server.broadcastUserDisconnected(username);
@@ -103,7 +104,7 @@ public class ClientHandler {
     }
 
     public String getUsername() {
-        return username;
+        return user.login;
     }
 
     public Socket getSocket(String username) {

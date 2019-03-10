@@ -99,18 +99,18 @@ public class Controller implements Initializable, MessageSender {
         }
 
         if (message.getText().contains("$USERS:")){
+            userList.clear();
             String[] array = message.getText().substring(18,message.getText().length()).split("\\,");
             for (String cur:array) {
                 if (!DataProcess.getCurUser().equals(cur))
                     userList.add(cur);
             }
-
             lvUsers.setItems(userList);
         }
 
         if (message.getText().contains("connected")){
             userList.clear();
-            DataProcess.getNetwork().sendMessage("$GET_USERS");
+          //  DataProcess.getNetwork().sendMessage("$GET_USERS");
         }
     }
 
@@ -153,8 +153,8 @@ public class Controller implements Initializable, MessageSender {
         if (!(curUser.equals(tfUsername.getText()))){
             dbWork.changeUserName(curUser,newUsername);
             Message msg = null;
-            msg = new Message("", curUser, "Пользователь "+curUser+" изменил ник на "+newUsername);
-            submitMessage(msg);
+          //  msg = new Message("", curUser, "Пользователь "+curUser+" изменил ник на "+newUsername);
+          //  submitMessage(msg);
 
             DataProcess.getNetwork().sendMessage(Const.CMD_CHANGE_NAME+newUsername);
             DataProcess.setCurUser(newUsername);
