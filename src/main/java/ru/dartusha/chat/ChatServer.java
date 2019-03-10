@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class ChatServer {
 
@@ -131,12 +132,23 @@ public class ChatServer {
     }
 
     public List<String> getUserList() {
+        List<String> result = clientHandlerMap.keySet().stream()
+                .map(user -> user.login)
+                .collect(Collectors.toList());
+
+        for (String rec:
+                result) {
+            System.out.println("test:"+rec);
+        }
+
+/*
         List<String> result=new ArrayList<String>();
         clientHandlerMap.forEach((user, clientHandler) -> result.add(user.login));
         for (String rec:
              result) {
             System.out.println("test:"+rec);
         }
+        */
         return result;
     }
 
@@ -248,6 +260,7 @@ public class ChatServer {
         System.out.println(user.login+","+newUsername);
         sendMessageAll("server", "Пользователь "+user.login+" изменил ник на "+newUsername);
         user.login=newUsername;
+        authService.refresh();
         broadcastUserList();
     }
 }

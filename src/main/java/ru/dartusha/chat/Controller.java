@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
+import java.util.HashMap;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable, MessageSender {
@@ -94,6 +95,20 @@ public class Controller implements Initializable, MessageSender {
                 result = result.replace("/a", "");
             }
 
+            try {
+                DataProcess.getUserLog().add(result);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+           if (message.getText().contains("User "+DataProcess.getCurUser()+" connected")){
+               for (String cur:DataProcess.getUserLog().getResArray().values()){
+                   messageList.add(cur);
+               }
+           }
+
+
+
             messageList.add(result);//.replace("/w", "Для "));
             lvMessages.setItems(messageList);
         }
@@ -110,8 +125,8 @@ public class Controller implements Initializable, MessageSender {
 
         if (message.getText().contains("connected")){
             userList.clear();
-          //  DataProcess.getNetwork().sendMessage("$GET_USERS");
         }
+
     }
 
     public void onLvUsersClick() {
@@ -153,30 +168,18 @@ public class Controller implements Initializable, MessageSender {
         if (!(curUser.equals(tfUsername.getText()))){
             dbWork.changeUserName(curUser,newUsername);
             Message msg = null;
-          //  msg = new Message("", curUser, "Пользователь "+curUser+" изменил ник на "+newUsername);
-          //  submitMessage(msg);
 
             DataProcess.getNetwork().sendMessage(Const.CMD_CHANGE_NAME+newUsername);
             DataProcess.setCurUser(newUsername);
             tfUsername.setText(newUsername);
-              // DataProcess.getNetwork().sendMessage(Const.CMD_CLOSED);
-             //   DataProcess.getNetwork().close();
-
-             //   Network network = null;
-             //   try {
-             //       network = new Network(Const.LOCAL_HOST, Const.PORT, (MessageSender) this);
-             //       network.authorize(newUsername,DataProcess.getPassword());
-             //   } catch (IOException e) {
-             //       e.printStackTrace();
-              //  }
-              //  DataProcess.setNetwork(network);
-
-              //  DataProcess.getNetwork().sendMessage("Пользователь "+curUser+" изменил ник на "+newUsername);
-             //   DataProcess.getNetwork().sendMessage("$GET_USERS");
+            try {
+                DataProcess.getUserLog().rename(newUsername);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
             }
-        //} catch (IOException e) {
-        //    e.printStackTrace();
+
     }
 }
 

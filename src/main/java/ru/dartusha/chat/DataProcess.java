@@ -5,6 +5,7 @@ public class DataProcess {
     public static String curUser;
     public static Controller parentController;
     public static String password;
+    public static UserLog userLog;
 
     public DataProcess(Network network) {
 
@@ -40,5 +41,13 @@ public class DataProcess {
 
     public static Controller getParentController(){
         return parentController;
+    }
+
+    public static void setUserLog(UserLog userLog) {
+        DataProcess.userLog = userLog;
+    }
+
+    public static UserLog getUserLog(){
+        return DataProcess.userLog;
     }
 }

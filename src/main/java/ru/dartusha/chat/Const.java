@@ -15,4 +15,7 @@ public class Const {
     static final String MESSAGE_SEND_ALL_PATTERN = "/a %s: %s";
     final static int  TIMEOUT=10;
     final static String DB_CONNECTION="jdbc:sqlite:userDB.db";
+    final static int CHAT_HISTORY=100;
+    final static String ENCODING_FROM="UTF-8";
+    final static String ENCODING_TO="ISO-8859-1";
 }
