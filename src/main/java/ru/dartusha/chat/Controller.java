@@ -141,6 +141,7 @@ public class Controller implements Initializable, MessageSender {
             DataProcess.getNetwork().sendMessage(Const.CMD_CLOSED);
             System.out.println("Client "+DataProcess.getCurUser()+" disconnected");
             DataProcess.getNetwork().close();
+            DataProcess.getUserLog().close();
         } catch (IOException e) {
             e.printStackTrace();
         }
