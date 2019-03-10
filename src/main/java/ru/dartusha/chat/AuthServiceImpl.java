@@ -6,7 +6,8 @@ import java.util.Map;
 
 public class AuthServiceImpl implements AuthService {
 
-    public Map<String, String> users = new HashMap<>();
+    private Map<String, String> users = new HashMap<>();
+    private Map<String, Integer> usersId= new HashMap<>();
 
     public AuthServiceImpl() throws ClassNotFoundException, SQLException {
        // users.put("ivan", "123");
@@ -16,13 +17,14 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public boolean authUser(String username, String password) {
+    public boolean authUser(String username, String password, Integer userId) {
         String pwd = users.get(username);
+        userId=usersId.get(username);
         return pwd != null && pwd.equals(password);
     }
 
     @Override
     public void refresh() throws SQLException, ClassNotFoundException {
-        dbWork.refresh(users);
+        dbWork.refresh(users, usersId);
     }
 }

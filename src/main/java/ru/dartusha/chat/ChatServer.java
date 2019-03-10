@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class ChatServer {
 
@@ -24,7 +25,7 @@ public class ChatServer {
         }
     }
 
-    private Map<String, ClientHandler> clientHandlerMap = Collections.synchronizedMap(new HashMap<>());
+    private Map<User, ClientHandler> clientHandlerMap = Collections.synchronizedMap(new HashMap<>());
 
     public static void main(String[] args) {
         ChatServer chatServer = new ChatServer();
@@ -48,8 +49,10 @@ public class ChatServer {
                     if (matcher.matches()) {
                         String username = matcher.group(1);
                         String password = matcher.group(2);
-                        if (authService.authUser(username, password)) {
-                            clientHandlerMap.put(username, new ClientHandler(username, socket, this));
+                        Integer userId=0;
+                        if (authService.authUser(username, password,userId)) {
+                            User user = new User(userId, username, password);
+                            clientHandlerMap.put(user, new ClientHandler(user, socket, this));
                             out.writeUTF("/auth successful");
                             out.flush();
                             System.out.printf("Authorization for user %s successful%n", username);
@@ -80,10 +83,10 @@ public class ChatServer {
 
 
                         } else {
-                            //System.out.printf("Authorization for user %s failed%n", username);
-                           //out.writeUTF("/auth fails");
-                           // out.flush();
-                           // socket.close();
+                            System.out.printf("Authorization for user %s failed%n", username);
+                            out.writeUTF("/auth fails");
+                            out.flush();
+                            socket.close();
                           //  startTimer(username, socket);
                         }
                     } else {
@@ -102,18 +105,51 @@ public class ChatServer {
         }
     }
 
-    public void sendMessage(String userFrom, String userTo, String msg) throws IOException {
-        ClientHandler userToClientHandler = clientHandlerMap.get(userTo);
+    public void sendMessage(String userFrom, User user, String msg) throws IOException {
+        ClientHandler userToClientHandler = clientHandlerMap.get(user);
         if (userToClientHandler != null) {
             userToClientHandler.sendMessage(userFrom, msg,"");
         } else {
-            System.out.printf("User %s not found. Message from %s is lost.%n", userTo, userFrom);
+            System.out.printf("User %s not found. Message from %s is lost.%n", user.login, userFrom);
+        }
+
+    }
+
+    public void sendMessage(String userFrom, String userTo, String msg) throws IOException {
+        ClientHandler userToClientHandler=null;
+        for(ClientHandler client : clientHandlerMap.values())
+        {
+           if (client.getUsername().equals(userTo))
+               userToClientHandler=client;
+        }
+
+        if (userToClientHandler != null) {
+            userToClientHandler.sendMessage(userFrom, msg,"");
+        } else {
+            System.out.printf("User %s not found. Message from %s is lost.%n", userToClientHandler.getUsername(), userFrom);
         }
 
     }
 
     public List<String> getUserList() {
-        return new ArrayList<>(clientHandlerMap.keySet());
+        List<String> result = clientHandlerMap.keySet().stream()
+                .map(user -> user.login)
+                .collect(Collectors.toList());
+
+        for (String rec:
+                result) {
+            System.out.println("test:"+rec);
+        }
+
+/*
+        List<String> result=new ArrayList<String>();
+        clientHandlerMap.forEach((user, clientHandler) -> result.add(user.login));
+        for (String rec:
+             result) {
+            System.out.println("test:"+rec);
+        }
+        */
+        return result;
     }
 
     public void unsubscribeClient(ClientHandler clientHandler) {
@@ -135,10 +171,33 @@ public class ChatServer {
         }
     }
 
+    public  void broadcastUserList() throws IOException {
+        List<String> str= getUserList();
+        String sendMsg="$USERS:";
+
+        for (String st:str){
+            sendMsg+=st+",";
+        }
+
+        for(ClientHandler client : clientHandlerMap.values())
+        {
+            client.sendMessage("server",sendMsg,"");
+        }
+    }
+
+
     public void broadcastUserConnected(String usrName) throws IOException {
+        List<String> str= getUserList();
+        String sendMsg="$USERS:";
+
+        for (String st:str){
+            sendMsg+=st+",";
+        }
+
         for(ClientHandler client : clientHandlerMap.values())
         {
             client.sendMessage("server", "User "+usrName+" connected","");
+            client.sendMessage("server",sendMsg,"");
         }
     }
 
@@ -149,7 +208,15 @@ public class ChatServer {
                client.sendMessage(client.getUsername(), "/a " + msg,userFrom);
            }
         }
+    }
 
+    public void sendServerMessageAll(String userFrom, String msg) throws IOException {
+        for(ClientHandler client : clientHandlerMap.values())
+        {
+            if (!client.getUsername().equals(userFrom)) {
+                client.sendMessage(client.getUsername(), msg,userFrom);
+            }
+        }
     }
 
 
@@ -188,19 +255,13 @@ public class ChatServer {
         timeoutThread.start();
     }
 
-    public void changeUsername(String oldUsername, String newUsername) throws SQLException, ClassNotFoundException {
+    public void changeUsername(User user, String newUsername) throws SQLException, ClassNotFoundException, IOException {
         System.out.println("refreshing usernames");
-        System.out.println(oldUsername+","+newUsername);
-        ClientHandler clientHandler=clientHandlerMap.get(oldUsername);
-        clientHandlerMap.put(newUsername, clientHandler);
+        System.out.println(user.login+","+newUsername);
+        sendMessageAll("server", "Пользователь "+user.login+" изменил ник на "+newUsername);
+        user.login=newUsername;
         authService.refresh();
-
-        /* TODO остается следующая проблема - если мы меняем username, то его нужно менять в clientHandlerMap и в clienthandler
-        и других связанных. Проблема в том что username ключ, и его можно менять добавлением и удалением старого
-        т.е. по сути нужно или "перезайти" клиентом. Или же выделять ник в отдельном поле
-        */
-
-      //  clientHandlerMap.remove(oldUsername);
+        broadcastUserList();
     }
 }
 
