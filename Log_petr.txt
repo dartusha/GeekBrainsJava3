@@ -1,3 +1,10 @@
  server: User petr connected
  julia test
  server: User petr connected
+ server: User petr connected
+yyyy
+uuu
+ server: User petr connected
+ julia uuu
+[14-03-2019 01:03:47] server: User petr connected
+[14-03-2019 01:03:54] julia test

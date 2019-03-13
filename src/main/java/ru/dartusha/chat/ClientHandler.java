@@ -6,18 +6,25 @@ import java.io.IOException;
 import java.net.Socket;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
 public class ClientHandler {
 
-    private final Thread handleThread;
+   // private final Thread handleThread;
     private final DataInputStream inp;
     private final DataOutputStream out;
     private final ChatServer server;
     private User user;
     private final Socket socket;
+    private final Future futureThread;
+
+    ExecutorService executorService = Executors.newCachedThreadPool();
 
     public ClientHandler(final User user, final Socket socket, final ChatServer server) throws IOException {
         this.user = user;
@@ -25,73 +32,69 @@ public class ClientHandler {
         this.server = server;
         this.inp = new DataInputStream(socket.getInputStream());
         this.out = new DataOutputStream(socket.getOutputStream());
-
-        this.handleThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    while (!Thread.currentThread().isInterrupted()) {
+        this.futureThread = executorService.submit(() -> {
+            try {
+                while (true)//(Thread.currentThread().isInterrupted()
+                    //)
+                {
                         String msg = inp.readUTF();
-                        System.out.printf("Message from user %s: %s%n", user.login, msg);
-                        if (msg.contains("$GET_USERS")){
-                            List<String> str= server.getUserList();
-                            String sendMsg="$USERS:";
-                            for (String st:str){
-                                sendMsg+=st+",";
-                            }
-                          //  server.sendMessage("server",user,sendMsg);
-                            server.sendServerMessageAll("server",sendMsg);
+                    System.out.printf("Message from user %s: %s%n", user.login, msg);
+                    if (msg.contains("$GET_USERS")) {
+                        List<String> str = server.getUserList();
+                        String sendMsg = "$USERS:";
+                        for (String st : str) {
+                            sendMsg += st + ",";
                         }
-                        if (msg.equals(Const.CMD_CLOSED)){
-                            System.out.format("Client %s disconnected", user.login);
-                            inp.close();
-                            out.close();
-                            server.unsubscribeClient(user.login);
-                            socket.close();
-                        }
-
-                        if (msg.contains(Const.CMD_CHANGE_NAME)){
-                           // System.out.format("Client %s disconnected", username);
-                          //  inp.close();
-                           // out.close();
-                            server.changeUsername(user,msg.substring(Const.CMD_CHANGE_NAME.length(),msg.length()));
-                           // socket.close();
-                        }
-
-                        Matcher matcher = Const.MESSAGE_PATTERN.matcher(msg);
-                        if (matcher.matches()) {
-                            String userTo = matcher.group(1);
-                            String sendMsg= matcher.group(2);
-                            server.sendMessage(user.login,userTo,sendMsg);
-                        }
-                        else{
-                            server.sendMessageAll(user.login,msg);
-                        }
-
+                        //  server.sendMessage("server",user,sendMsg);
+                        server.sendServerMessageAll("server", sendMsg);
                     }
+                    if (msg.equals(Const.CMD_CLOSED)) {
+                        System.out.format("Client %s disconnected", user.login);
+                        inp.close();
+                        out.close();
+                        server.unsubscribeClient(user.login);
+                        socket.close();
+                    }
+
+                    if (msg.contains(Const.CMD_CHANGE_NAME)) {
+                        server.changeUsername(user, msg.substring(Const.CMD_CHANGE_NAME.length(), msg.length()));
+                    }
+
+                    Matcher matcher = Const.MESSAGE_PATTERN.matcher(msg);
+                    if (matcher.matches()) {
+                        String userTo = matcher.group(1);
+                        String sendMsg = matcher.group(2);
+                        server.sendMessage(user.login, userTo, sendMsg);
+                    } else {
+                        server.sendMessageAll(user.login, msg);
+                    }
+
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } finally {
+                System.out.printf("Client %s disconnected%n", user.login);
+                try {
+                    socket.close();
+                    //  server.broadcastUserDisconnected(username);
                 } catch (IOException e) {
                     e.printStackTrace();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                } finally {
-                    System.out.printf("Client %s disconnected%n", user.login);
-                    try {
-                        socket.close();
-                      //  server.broadcastUserDisconnected(username);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
                 }
             }
-        });
-        handleThread.start();
-    }
 
-   // public DataOutputStream getOut() {
-  //      return out;
-  // }
+        });
+     //   try {
+     //       System.out.println(this.futureThread.get());
+      //  } catch (InterruptedException e) {
+      //      e.printStackTrace();
+       // } catch (ExecutionException e) {
+        //    e.printStackTrace();
+        //}
+    }
 
     public void sendMessage(String userTo, String msg, String userFrom) throws IOException {
        // System.out.println("string:"+String.format(Const.MESSAGE_SEND_PATTERN, userTo, msg));

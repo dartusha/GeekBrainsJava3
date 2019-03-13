@@ -27,6 +27,8 @@ public class ChatServer {
 
     private Map<User, ClientHandler> clientHandlerMap = Collections.synchronizedMap(new HashMap<>());
 
+    private ThreadMaster threadMaster=new ThreadMaster();
+
     public static void main(String[] args) {
         ChatServer chatServer = new ChatServer();
         chatServer.start(Const.PORT);
@@ -58,28 +60,7 @@ public class ChatServer {
                             System.out.printf("Authorization for user %s successful%n", username);
                             broadcastUserConnected(username);
 
-                            Thread serverMsg=
-                                    new Thread(new Runnable() {
-
-                                        @Override
-                                        public void run() {
-                                            while (true) {
-                                                String inputStr = null;
-                                                try {
-                                                    inputStr = inputCon.readLine();
-                                                        for(ClientHandler client : clientHandlerMap.values())
-                                                        {
-                                                            client.sendMessage("server",inputStr,"");
-                                                        }
-                                                } catch (IOException e) {
-                                                    e.printStackTrace();
-                                                }
-                                                System.out.format("Сообщение от сервера: %s",inputStr);
-                                                System.out.println("");
-                                            }
-                                        }
-                                    });
-                            serverMsg.start();
+                            threadMaster.addClientThread(inputCon,clientHandlerMap);
 
 
                         } else {
@@ -87,7 +68,7 @@ public class ChatServer {
                             out.writeUTF("/auth fails");
                             out.flush();
                             socket.close();
-                          //  startTimer(username, socket);
+                           // threadMaster.startTimer(username,socket,clientHandlerMap);
                         }
                     } else {
                         System.out.printf("Incorrect authorization message %s%n", authMessage);
@@ -141,14 +122,6 @@ public class ChatServer {
             System.out.println("test:"+rec);
         }
 
-/*
-        List<String> result=new ArrayList<String>();
-        clientHandlerMap.forEach((user, clientHandler) -> result.add(user.login));
-        for (String rec:
-             result) {
-            System.out.println("test:"+rec);
-        }
-        */
         return result;
     }
 
@@ -227,33 +200,6 @@ public class ChatServer {
         }
     }
 
-    public void startTimer(String userName, Socket socket){
-        //test
-        Thread timeoutThread=
-                new Thread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        try {
-                            System.out.printf("You have %d seconds for login.", Const.TIMEOUT);
-                            System.out.println("");
-                            Thread.sleep(1000*Const.TIMEOUT);
-                            if (clientHandlerMap.get(userName)==null) {
-                                socket.close();
-                                System.out.printf("Authorization for user %s failed%n", userName);
-                                System.out.println("");
-                            }
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
-
-                    }
-                });
-        timeoutThread.start();
-    }
 
     public void changeUsername(User user, String newUsername) throws SQLException, ClassNotFoundException, IOException {
         System.out.println("refreshing usernames");

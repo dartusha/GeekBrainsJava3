@@ -17,6 +17,8 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 
@@ -94,6 +96,8 @@ public class Controller implements Initializable, MessageSender {
             if (result.contains("/a")) {
                 result = result.replace("/a", "");
             }
+
+            result="["+new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(Calendar.getInstance().getTime())+"]"+result;
 
             try {
                 DataProcess.getUserLog().add(result);

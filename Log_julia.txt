@@ -123,3 +123,31 @@ test
  server: User petr connected
  server: User petr disconnected
  server: User julia connected
+ server: User julia connected
+test
+ server: User julia connected
+ server: User julia connected
+ server: User julia connected
+ server: test
+ttt
+ server: User julia connected
+ server: test
+test
+ server: User petr connected
+ petr:  yyyy
+ petr:  uuu
+ server: User julia connected
+yyyy
+ server: yyyy
+test
+ server: tests
+ server: User julia connected
+ server: User petr connected
+ petr: uuu
+ server: User petr disconnected
+[14-03-2019 01:03:01] server: User julia connected
+[14-03-2019 01:03:13]проверка
+[14-03-2019 01:03:21]ггг
+[14-03-2019 01:03:25] server: yyyy
+[14-03-2019 01:03:47] server: User petr connected
+[14-03-2019 01:03:54] petr: test
