@@ -1,3 +1,26 @@
  server: User petr connected
  julia test
  server: User petr connected
+ server: User petr connected
+yyyy
+uuu
+ server: User petr connected
+ julia uuu
+[14-03-2019 01:03:47] server: User petr connected
+[14-03-2019 01:03:54] julia test
+[14-03-2019 01:36:27]test
+[14-03-2019 01:42:39] server: User petr connected
+[14-03-2019 01:42:46] julia: yyy
+[14-03-2019 01:42:57] julia yyy
+[14-03-2019 02:06:04] server: User petr connected
+[14-03-2019 02:06:08] julia ttt
+[14-03-2019 02:06:15] julia:  ttt
+[14-03-2019 02:20:07] server: User petr connected
+[14-03-2019 02:20:12] server: test
+[14-03-2019 02:20:18]test
+[14-03-2019 02:20:24] server: ttt
+[14-03-2019 02:20:29]ttt
+[14-03-2019 02:22:02] server: User julia connected
+[14-03-2019 02:22:08] julia: yyy
+[14-03-2019 02:22:17] server: yyy
+[14-03-2019 02:22:28] julia uuu

@@ -7,6 +7,9 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class Network implements Closeable {
 
@@ -16,9 +19,12 @@ public class Network implements Closeable {
     private final DataOutputStream out;
     private final DataInputStream in;
     private final MessageSender messageSender;
-    private final Thread receiver;
+ //   private final Thread receiver;
+    private  Future receiverFuture;
 
     private  String usr;
+
+    ExecutorService executorService = Executors.newCachedThreadPool();
 
     public Network(String hostName, int port, MessageSender messageSender) throws IOException {
         this.socket = new Socket(hostName, port);
@@ -26,31 +32,32 @@ public class Network implements Closeable {
         this.in = new DataInputStream(socket.getInputStream());
         this.messageSender = messageSender;
 
-        this.receiver = createReceiverThread();
+     //   this.receiver = createReceiverThread();
     }
 
-    private Thread createReceiverThread() {
-        return new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (!Thread.currentThread().isInterrupted()) {
-                    try {
-                        String text = in.readUTF();
-                        Platform.runLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                System.out.println("New message:" + text);
-                                Message msg = new Message("server", usr,  text);
-                                messageSender.submitMessage(msg);
-                            }
-                        });
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+    private Future createReceiverFuture() {
+        Future future = executorService.submit(()-> {
+            boolean flag=true;
+            while (flag) {
+                try {
+                    String text = in.readUTF();
+                    Platform.runLater(new Runnable() { //TODO Вот тут немного непонятно как заменить на executorService
+                        @Override
+                        public void run() {
+                            System.out.println("New message:" + text);
+                            Message msg = new Message("server", usr, text);
+                            messageSender.submitMessage(msg);
+                        }
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    flag=false;
                 }
             }
         });
+        return future;
     }
+
 
     public void sendMessageToUser(Message message) {
         sendMessage(message.getText());
@@ -72,7 +79,8 @@ public class Network implements Closeable {
             if (response.equals("/auth successful")) {
                 usr = username;
                 System.out.println("username:"+usr );
-                receiver.start();
+                this.receiverFuture=createReceiverFuture();
+              //  receiver.start();
             } else {
                 throw new AuthException();
             }
@@ -88,12 +96,7 @@ public class Network implements Closeable {
     @Override
     public void close() throws IOException {
         socket.close();
-        receiver.interrupt();
-        try {
-            receiver.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        this.receiverFuture.cancel(true);
     }
 
 }
