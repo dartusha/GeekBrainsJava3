@@ -19,7 +19,7 @@ public class Network implements Closeable {
     private final DataOutputStream out;
     private final DataInputStream in;
     private final MessageSender messageSender;
-    private final Thread receiver;
+ //   private final Thread receiver;
     private  Future receiverFuture;
 
     private  String usr;
@@ -32,15 +32,16 @@ public class Network implements Closeable {
         this.in = new DataInputStream(socket.getInputStream());
         this.messageSender = messageSender;
 
-        this.receiver = createReceiverThread();
+     //   this.receiver = createReceiverThread();
     }
 
     private Future createReceiverFuture() {
         Future future = executorService.submit(()-> {
-            while (!Thread.currentThread().isInterrupted()) {
+            boolean flag=true;
+            while (flag) {
                 try {
                     String text = in.readUTF();
-                    Platform.runLater(new Runnable() {
+                    Platform.runLater(new Runnable() { //TODO Вот тут немного непонятно как заменить на executorService
                         @Override
                         public void run() {
                             System.out.println("New message:" + text);
@@ -50,36 +51,13 @@ public class Network implements Closeable {
                     });
                 } catch (IOException e) {
                     e.printStackTrace();
+                    flag=false;
                 }
             }
         });
         return future;
     }
 
-
-    private Thread createReceiverThread() {
-        return new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (true)//(!Thread.currentThread().isInterrupted())
-                {
-                    try {
-                        String text = in.readUTF();
-                        Platform.runLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                System.out.println("New message:" + text);
-                                Message msg = new Message("server", usr,  text);
-                                messageSender.submitMessage(msg);
-                            }
-                        });
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-    }
 
     public void sendMessageToUser(Message message) {
         sendMessage(message.getText());
@@ -118,12 +96,6 @@ public class Network implements Closeable {
     @Override
     public void close() throws IOException {
         socket.close();
-       // receiver.interrupt();
-       // try {
-       //     receiver.join();
-       // } catch (InterruptedException e) {
-        //    e.printStackTrace();
-        //}
         this.receiverFuture.cancel(true);
     }
 

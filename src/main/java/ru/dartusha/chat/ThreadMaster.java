@@ -14,17 +14,20 @@ public class ThreadMaster {
 
     }
 
-    public void addClientThread(BufferedReader inputCon, Map<User, ClientHandler> clientHandlerMap) {
+    public void addClientThread(BufferedReader inputCon, ChatServer server) {
         executorService.execute(() -> {
-            while (true) {
+            boolean flag=true;
+            while (flag) {
                 String inputStr = null;
                 try {
                     inputStr = inputCon.readLine();
-                    for (ClientHandler client : clientHandlerMap.values()) {
+                    for (ClientHandler client : server.clientHandlerMap.values()) {
+                        System.out.println("sending:"+client.getUsername());
                         client.sendMessage("server", inputStr, "");
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
+                    flag=false;
                 }
                 System.out.format("Сообщение от сервера: %s", inputStr);
                 System.out.println("");

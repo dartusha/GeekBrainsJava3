@@ -25,7 +25,7 @@ public class ChatServer {
         }
     }
 
-    private Map<User, ClientHandler> clientHandlerMap = Collections.synchronizedMap(new HashMap<>());
+    public Map<User, ClientHandler> clientHandlerMap = Collections.synchronizedMap(new HashMap<>());
 
     private ThreadMaster threadMaster=new ThreadMaster();
 
@@ -60,7 +60,7 @@ public class ChatServer {
                             System.out.printf("Authorization for user %s successful%n", username);
                             broadcastUserConnected(username);
 
-                            threadMaster.addClientThread(inputCon,clientHandlerMap);
+                            threadMaster.addClientThread(inputCon,this);
 
 
                         } else {
@@ -125,20 +125,10 @@ public class ChatServer {
         return result;
     }
 
-    public void unsubscribeClient(ClientHandler clientHandler) {
-        String userName=clientHandler.getUsername();
-        clientHandlerMap.remove(userName);
+    public void unsubscribeClient(User user) {
+        clientHandlerMap.remove(user);
         try {
-            broadcastUserDisconnected(userName);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void unsubscribeClient(String userName) {
-        clientHandlerMap.remove(userName);
-        try {
-            broadcastUserDisconnected(userName);
+            broadcastUserDisconnected(user.login);
         } catch (IOException e) {
             e.printStackTrace();
         }

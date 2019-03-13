@@ -34,7 +34,8 @@ public class ClientHandler {
         this.out = new DataOutputStream(socket.getOutputStream());
         this.futureThread = executorService.submit(() -> {
             try {
-                while (true)//(Thread.currentThread().isInterrupted()
+                boolean flag=true;
+                while (flag)//(Thread.currentThread().isInterrupted()
                     //)
                 {
                         String msg = inp.readUTF();
@@ -52,8 +53,9 @@ public class ClientHandler {
                         System.out.format("Client %s disconnected", user.login);
                         inp.close();
                         out.close();
-                        server.unsubscribeClient(user.login);
+                        server.unsubscribeClient(user);
                         socket.close();
+                        flag=false;
                     }
 
                     if (msg.contains(Const.CMD_CHANGE_NAME)) {
@@ -77,13 +79,13 @@ public class ClientHandler {
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             } finally {
-                System.out.printf("Client %s disconnected%n", user.login);
-                try {
-                    socket.close();
-                    //  server.broadcastUserDisconnected(username);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+               // System.out.printf("Client %s disconnected%n", user.login);
+               // try {
+                //    socket.close();
+                   // server.unsubscribeClient(user.login);
+               // } catch (IOException e) {
+               //     e.printStackTrace();
+               // }
             }
 
         });
