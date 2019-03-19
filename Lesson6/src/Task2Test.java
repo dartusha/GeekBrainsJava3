@@ -15,7 +15,6 @@ public class Task2Test {
     public static Collection data() {
         return Arrays.asList(new int[][][] {
                 {{1, 2, 4, 4, 2, 3, 4, 1, 7},{1,7}},
-                {{1, 2, 1, 1, 2, 3, 1, 1, 7},{1,7}},
                 {{1, 2, 1, 1, 2, 4, 1, 1, 7},{1,1,7}},
                 {{1, 2, 1, 1, 2, 4, 1, 1, 4},{}},
                 {{4, 2, 1, 1, 2, 9, 1, 1, 0},{2, 1, 1, 2, 9, 1, 1, 0}},
@@ -36,9 +35,9 @@ public class Task2Test {
 
     @Test
     public void testTask2() {
-
         Assert.assertArrayEquals(arrayRes, task2.getArray(arrayIn));
     }
+
 
     /*
     @ParameterizedTest
