@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 /*
 2. Написать метод, которому в качестве аргумента передается не пустой одномерный целочисленный массив.
 Метод должен вернуть новый массив, который получен путем вытаскивания из исходного массива элементов,
@@ -35,16 +37,11 @@ public class Task2 {
 Написать набор тестов для этого метода (по 3-4 варианта входных данных).
  */
   public boolean checkArray(int[] inArray){
-      boolean flag1=false;
-      boolean flag4=false;
-      for (int i = 0; i < inArray.length; i++) {
-          if (inArray[i]==1){
-              flag1=true;
-          }
-          if (inArray[i]==4){
-              flag4=true;
-          }
-      }
-      return flag1&&flag4;
+      String s=Arrays.toString(inArray).replaceAll("[, ]","").replace("[","").replace("]","");
+      if ((s.replaceAll("[^1^4]", "").equals(s))
+      &&(s.contains("1"))&&(s.contains("4")))
+          return true;
+      else
+          return false;
   }
 }
