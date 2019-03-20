@@ -38,18 +38,4 @@ public class Task2Test {
         Assert.assertArrayEquals(arrayRes, task2.getArray(arrayIn));
     }
 
-
-    /*
-    @ParameterizedTest
-    @ValueSource(strings = { "Hello", "World" })
-    void testWithStringParameter(String argument) {
-        assertNotNull(argument);
-    }
-    */
-
-  //  public void testTask2() {
-  //      task2 = new Task2();
-  //      Assert.assertArrayEquals(new int[]{1, 7}, task2.getArray(new int[]{1, 2, 4, 4, 2, 3, 4, 1, 7}));
-  //  }
-
 }
