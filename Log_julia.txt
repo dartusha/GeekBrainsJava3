@@ -1,0 +1,215 @@
+﻿ server:  Пользователь julia1 изменил ник на julia
+ server: User julia connected
+rtutru
+rtrurtu
+777
+twtwet
+est
+ server: User julia connected
+проверка связи
+test
+еще одна
+ server: User julia connected
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+ server: User julia connected
+ server: User julia connected
+ server: User julia connected
+проверка отображения русских букв
+ server: User julia connected
+ server: User julia connected
+ server: User petr connected
+ petr: test
+ server: User julia connected
+ server: User petr connected
+ server: User petr disconnected
+ server: User julia connected
+ server: User julia connected
+test
+ server: User julia connected
+ server: User julia connected
+ server: User julia connected
+ server: test
+ttt
+ server: User julia connected
+ server: test
+test
+ server: User petr connected
+ petr:  yyyy
+ petr:  uuu
+ server: User julia connected
+yyyy
+ server: yyyy
+test
+ server: tests
+ server: User julia connected
+ server: User petr connected
+ petr: uuu
+ server: User petr disconnected
+[14-03-2019 01:03:01] server: User julia connected
+[14-03-2019 01:03:13]проверка
+[14-03-2019 01:03:21]ггг
+[14-03-2019 01:03:25] server: yyyy
+[14-03-2019 01:03:47] server: User petr connected
+[14-03-2019 01:03:54] petr: test
+[14-03-2019 01:30:59] server: User julia connected
+[14-03-2019 01:31:03]test
+[14-03-2019 01:31:07] server: test
+[14-03-2019 01:35:42] server: User julia connected
+[14-03-2019 01:35:50]test
+[14-03-2019 01:39:38] server: User julia connected
+[14-03-2019 01:39:44]test
+[14-03-2019 01:39:48] server: test
+[14-03-2019 01:42:30] server: User julia connected
+[14-03-2019 01:42:39] server: User petr connected
+[14-03-2019 01:42:46] petr yyy
+[14-03-2019 01:42:57] petr: yyy
+[14-03-2019 01:43:03] server: User petr disconnected
+[14-03-2019 01:43:10] server: test
+[14-03-2019 01:43:23] server: yyyy
+[14-03-2019 01:43:52] server: rewrwr
+[14-03-2019 01:46:41] server: User julia connected
+[14-03-2019 01:46:56]tst
+[14-03-2019 01:47:11] server: test
+[14-03-2019 01:50:07] server: User julia connected
+[14-03-2019 01:50:13]test
+[14-03-2019 01:50:16] server: test
+[14-03-2019 01:51:39] server: User julia connected
+[14-03-2019 01:51:44]test
+[14-03-2019 01:51:47] server: tset
+[14-03-2019 01:53:56] server: User julia connected
+[14-03-2019 01:54:01]test
+[14-03-2019 01:54:04] server: test
+[14-03-2019 01:55:18] server: User julia connected
+[14-03-2019 01:55:22]test
+[14-03-2019 01:55:26] server: test
+[14-03-2019 01:56:14] server: User julia connected
+[14-03-2019 01:56:21]test
+[14-03-2019 01:56:56] server: User julia connected
+[14-03-2019 01:57:46] server: User julia connected
+[14-03-2019 02:03:05] server: User julia connected
+[14-03-2019 02:03:11]test
+[14-03-2019 02:03:14] server: test
+[14-03-2019 02:05:55] server: User julia connected
+[14-03-2019 02:06:03] server: User petr connected
+[14-03-2019 02:06:08] petr: ttt
+[14-03-2019 02:06:15]ttt
+[14-03-2019 02:06:51] server: User petr disconnected
+[14-03-2019 02:06:51] server: User petr disconnected
+[14-03-2019 02:07:25] server: tttt
+[14-03-2019 02:07:25] server: test
+[14-03-2019 02:11:52] server: User julia connected
+[14-03-2019 02:11:55]test
+[14-03-2019 02:12:01] server: test
+[14-03-2019 02:19:28] server: User julia connected
+[14-03-2019 02:19:36]test
+[14-03-2019 02:19:40] server: test
+[14-03-2019 02:22:02] server: User julia connected
+[14-03-2019 02:22:08] petr yyy
+[14-03-2019 02:22:17] server: yyy
+[14-03-2019 02:22:28] petr: uuu
+[14-03-2019 02:22:30] server: User petr disconnected
+[14-03-2019 02:23:14] server: 
+[14-03-2019 02:23:16] server: ggg
+[14-03-2019 02:27:16] server: User julia connected
+[14-03-2019 02:27:22]ttt
+[14-03-2019 02:27:25] server: fff
