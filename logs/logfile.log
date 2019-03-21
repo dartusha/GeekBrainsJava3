@@ -1,0 +1,29 @@
+INFO  2019-03-21 13:38:35 [main] ru.dartusha.chat.ChatServer (ChatServer.java:36) - Start debug
+INFO  2019-03-21 13:47:34 [main] ru.dartusha.chat.ChatServer (ChatServer.java:36) - Start debug
+INFO  2019-03-21 13:47:34 [main] ru.dartusha.chat.ChatServer (ChatServer.java:43) - Server started!
+INFO  2019-03-21 13:55:16 [main] ru.dartusha.chat.ChatServer (ChatServer.java:36) - Start debug
+INFO  2019-03-21 13:55:16 [main] ru.dartusha.chat.ChatServer (ChatServer.java:43) - Server started!
+INFO  2019-03-21 13:55:22 [main] ru.dartusha.chat.ChatServer (ChatServer.java:36) - Start debug
+INFO  2019-03-21 13:55:22 [main] ru.dartusha.chat.ChatServer (ChatServer.java:43) - Server started!
+INFO  2019-03-21 14:56:14 [main] ru.dartusha.chat.ChatServer (ChatServer.java:36) - Start debug
+INFO  2019-03-21 14:56:14 [main] ru.dartusha.chat.dbWork (dbWork.java:21) - Creating connection with DB: jdbc:sqlite:userDB.db
+INFO  2019-03-21 14:56:14 [main] ru.dartusha.chat.dbWork (dbWork.java:24) - Executing statement:select * from users
+INFO  2019-03-21 14:56:14 [main] ru.dartusha.chat.ChatServer (ChatServer.java:43) - Server started!
+INFO  2019-03-21 14:57:17 [main] ru.dartusha.chat.ChatServer (ChatServer.java:36) - Start debug
+INFO  2019-03-21 14:57:17 [main] ru.dartusha.chat.dbWork (dbWork.java:21) - Creating connection with DB: jdbc:sqlite:userDB.db
+INFO  2019-03-21 14:57:18 [main] ru.dartusha.chat.dbWork (dbWork.java:24) - Executing statement:select * from users
+INFO  2019-03-21 14:57:18 [main] ru.dartusha.chat.ChatServer (ChatServer.java:43) - Server started!
+INFO  2019-03-21 15:01:12 [main] ru.dartusha.chat.ChatServer (ChatServer.java:36) - Start debug
+INFO  2019-03-21 15:01:12 [main] ru.dartusha.chat.dbWork (dbWork.java:21) - Creating connection with DB: jdbc:sqlite:userDB.db
+INFO  2019-03-21 15:01:13 [main] ru.dartusha.chat.dbWork (dbWork.java:24) - Executing statement:select * from users
+ERROR 2019-03-21 15:01:13 [main] ru.dartusha.chat.dbWork (dbWork.java:39) - org.sqlite.SQLiteException: [SQLITE_ERROR] SQL error or missing database (no such table: users1)
+INFO  2019-03-21 15:01:13 [main] ru.dartusha.chat.ChatServer (ChatServer.java:43) - Server started!
+INFO  2019-03-21 15:11:46 [main] ru.dartusha.chat.ChatServer (ChatServer.java:40) - Start debug
+INFO  2019-03-21 15:11:46 [main] ru.dartusha.chat.dbWork (dbWork.java:21) - Creating connection with DB: jdbc:sqlite:userDB.db
+INFO  2019-03-21 15:11:46 [main] ru.dartusha.chat.dbWork (dbWork.java:24) - Executing statement:select * from users
+ERROR 2019-03-21 15:11:46 [main] ru.dartusha.chat.dbWork (dbWork.java:39) - org.sqlite.SQLiteException: [SQLITE_ERROR] SQL error or missing database (no such table: users1)
+INFO  2019-03-21 15:11:46 [main] ru.dartusha.chat.ChatServer (ChatServer.java:47) - Server started!
+INFO  2019-03-21 15:12:30 [main] ru.dartusha.chat.ChatServer (ChatServer.java:40) - Start debug
+INFO  2019-03-21 15:12:30 [main] ru.dartusha.chat.dbWork (dbWork.java:21) - Creating connection with DB: jdbc:sqlite:userDB.db
+INFO  2019-03-21 15:12:30 [main] ru.dartusha.chat.dbWork (dbWork.java:24) - Executing statement:select * from users
+INFO  2019-03-21 15:12:30 [main] ru.dartusha.chat.ChatServer (ChatServer.java:47) - Server started!

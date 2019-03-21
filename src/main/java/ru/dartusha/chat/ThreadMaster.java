@@ -8,7 +8,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ThreadMaster {
-    ExecutorService executorService = Executors.newCachedThreadPool();
+    ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     ThreadMaster(){
 

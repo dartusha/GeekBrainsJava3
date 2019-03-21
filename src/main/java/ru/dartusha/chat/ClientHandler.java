@@ -24,7 +24,6 @@ public class ClientHandler {
     private final Socket socket;
     private final Future futureThread;
 
-    ExecutorService executorService = Executors.newCachedThreadPool();
 
     public ClientHandler(final User user, final Socket socket, final ChatServer server) throws IOException {
         this.user = user;
@@ -32,14 +31,12 @@ public class ClientHandler {
         this.server = server;
         this.inp = new DataInputStream(socket.getInputStream());
         this.out = new DataOutputStream(socket.getOutputStream());
-        this.futureThread = executorService.submit(() -> {
+        this.futureThread = server.executorService.submit(() -> {
             try {
-                boolean flag=true;
-                while (flag)//(Thread.currentThread().isInterrupted()
-                    //)
+                while (Thread.currentThread().isInterrupted())
                 {
-                        String msg = inp.readUTF();
-                    System.out.printf("Message from user %s: %s%n", user.login, msg);
+                    String msg = inp.readUTF();
+                    server.logger.info("Message from user "+user.login+":"+msg);
                     if (msg.contains("$GET_USERS")) {
                         List<String> str = server.getUserList();
                         String sendMsg = "$USERS:";
@@ -50,12 +47,11 @@ public class ClientHandler {
                         server.sendServerMessageAll("server", sendMsg);
                     }
                     if (msg.equals(Const.CMD_CLOSED)) {
-                        System.out.format("Client %s disconnected", user.login);
+                        server.logger.info("Client "+user.login+" disconnected");
                         inp.close();
                         out.close();
                         server.unsubscribeClient(user);
                         socket.close();
-                        flag=false;
                     }
 
                     if (msg.contains(Const.CMD_CHANGE_NAME)) {
@@ -74,10 +70,13 @@ public class ClientHandler {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
+                server.logger.info(e);
             } catch (SQLException e) {
                 e.printStackTrace();
+                server.logger.info(e);
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
+                server.logger.info(e);
             } finally {
                // System.out.printf("Client %s disconnected%n", user.login);
                // try {
