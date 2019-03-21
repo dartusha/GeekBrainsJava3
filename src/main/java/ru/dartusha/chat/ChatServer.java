@@ -5,13 +5,20 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.SQLException;
 import java.util.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class ChatServer {
+    public static final Logger logger = LogManager.getLogger(ChatServer.class.getName());
 
     private static final Pattern AUTH_PATTERN = Pattern.compile("^/auth (\\w+) (\\w+)$");
+    ExecutorService executorService = Executors.newCachedThreadPool();
 
     private AuthService authService;
 
@@ -30,23 +37,24 @@ public class ChatServer {
     private ThreadMaster threadMaster=new ThreadMaster();
 
     public static void main(String[] args) {
+        logger.info("Start debug");
         ChatServer chatServer = new ChatServer();
         chatServer.start(Const.PORT);
     }
 
     public void start(int port) {
         try (ServerSocket serverSocket = new ServerSocket(port)) {
-            System.out.println("Server started!");
+            logger.info("Server started!");
             while (true) {
                 Socket socket = serverSocket.accept();
                 DataInputStream inp = new DataInputStream(socket.getInputStream());
                 DataOutputStream out = new DataOutputStream(socket.getOutputStream());
                 BufferedReader inputCon = new BufferedReader(new InputStreamReader(System.in));
-                System.out.println("New client connected!");
+                logger.info("New client connected!");
                // startTimer(socket);
                 try {
                     String authMessage = inp.readUTF();
-                    System.out.println(authMessage);
+                    logger.info(authMessage);
                     Matcher matcher = AUTH_PATTERN.matcher(authMessage);
                     if (matcher.matches()) {
                         String username = matcher.group(1);
@@ -57,32 +65,33 @@ public class ChatServer {
                             clientHandlerMap.put(user, new ClientHandler(user, socket, this));
                             out.writeUTF("/auth successful");
                             out.flush();
-                            System.out.printf("Authorization for user %s successful%n", username);
+                            logger.info("Authorization for user "+username+" successful");
                             broadcastUserConnected(username);
 
                             threadMaster.addClientThread(inputCon,this);
 
 
                         } else {
-                            System.out.printf("Authorization for user %s failed%n", username);
+                            logger.info("Authorization for user "+username+" failed");
                             out.writeUTF("/auth fails");
                             out.flush();
                             socket.close();
                            // threadMaster.startTimer(username,socket,clientHandlerMap);
                         }
                     } else {
-                        System.out.printf("Incorrect authorization message %s%n", authMessage);
+                        logger.info("Incorrect authorization message: "+authMessage);
                         out.writeUTF("/auth fails");
                         out.flush();
                         socket.close();
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
-
+                    logger.error(e);
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
+            logger.error(e);
         }
     }
 
@@ -91,7 +100,7 @@ public class ChatServer {
         if (userToClientHandler != null) {
             userToClientHandler.sendMessage(userFrom, msg,"");
         } else {
-            System.out.printf("User %s not found. Message from %s is lost.%n", user.login, userFrom);
+            logger.info("User "+user.login+" not found. Message from "+userFrom+" is lost.");
         }
 
     }
@@ -107,7 +116,7 @@ public class ChatServer {
         if (userToClientHandler != null) {
             userToClientHandler.sendMessage(userFrom, msg,"");
         } else {
-            System.out.printf("User %s not found. Message from %s is lost.%n", userToClientHandler.getUsername(), userFrom);
+            logger.info("User "+userToClientHandler.getUsername()+" not found. Message from "+userFrom+" is lost.");
         }
 
     }
@@ -116,11 +125,6 @@ public class ChatServer {
         List<String> result = clientHandlerMap.keySet().stream()
                 .map(user -> user.login)
                 .collect(Collectors.toList());
-
-        for (String rec:
-                result) {
-            System.out.println("test:"+rec);
-        }
 
         return result;
     }
@@ -192,8 +196,8 @@ public class ChatServer {
 
 
     public void changeUsername(User user, String newUsername) throws SQLException, ClassNotFoundException, IOException {
-        System.out.println("refreshing usernames");
-        System.out.println(user.login+","+newUsername);
+        logger.info("Refreshing usernames");
+        //logger.info(user.login+","+newUsername);
         sendMessageAll("server", "Пользователь "+user.login+" изменил ник на "+newUsername);
         user.login=newUsername;
         authService.refresh();

@@ -24,7 +24,7 @@ public class Network implements Closeable {
 
     private  String usr;
 
-    ExecutorService executorService = Executors.newCachedThreadPool();
+    ExecutorService executorService = Executors.newFixedThreadPool(1);
 
     public Network(String hostName, int port, MessageSender messageSender) throws IOException {
         this.socket = new Socket(hostName, port);
