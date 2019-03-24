@@ -10,4 +10,12 @@ public class ForTest {
     public static void thirdTest() {
         System.out.println("Third Test");
     }
+    @BeforeSuite
+    public ForTest(){
+        System.out.println("Constructor");
+    }
+    @AfterSuite
+    public static void afterTest() {
+        System.out.println("AfterSuite test");
+    }
 }
