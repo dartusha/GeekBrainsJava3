@@ -1,9 +1,7 @@
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.sql.Connection;
 import java.util.HashMap;
-import java.util.HashSet;
 
 /*
 Создать класс, который может выполнять «тесты». В качестве тестов выступают классы с наборами методов
@@ -16,8 +14,12 @@ import java.util.HashSet;
    в единственном экземпляре, иначе необходимо бросить RuntimeException при запуске «тестирования».
  */
 public class TestEngine {
-
     public static void start(Class inClass){
+        start(inClass,new Object[][]{{}});
+    }
+
+    //TODO  Сделать возможность передавать параметры методов, конструкторов в масссиве - этого пока не сделала
+    public static void start(Class inClass,Object[][] params){
         Boolean flagOnly=false;
         Constructor[] constructors = inClass.getDeclaredConstructors();
         for (Constructor o : constructors) {
@@ -27,6 +29,11 @@ public class TestEngine {
                         throw new RuntimeException("Конструктор с аннотацией BeforeSuite должен быть единственным!");
                     }
                     System.out.println(o);
+                    Class[] paramTypes = o.getParameterTypes();
+                    for (Class paramType : paramTypes) {
+                        System.out.print(paramType.getName() + " ");
+                    }
+                    System.out.println();
                     o.newInstance();
                     flagOnly=true;
                 } catch (InstantiationException e) {
@@ -48,6 +55,10 @@ public class TestEngine {
                             throw new RuntimeException("Метод с аннотацией BeforeSuite должен быть единственным!");
                         }
                         System.out.println(o);
+                        Class[] paramTypes = o.getParameterTypes();
+                        for (Class paramType : paramTypes) {
+                            System.out.print(paramType.getName() + " ");
+                        }
                         o.invoke(inClass);
                         flagOnly=true;
                     } catch (IllegalAccessException e) {
@@ -71,6 +82,10 @@ public class TestEngine {
         for(int counter : map.keySet()) {
             System.out.println(map.get(counter));
             try {
+                Class[] paramTypes = map.get(counter).getParameterTypes();
+                for (Class paramType : paramTypes) {
+                    System.out.print(paramType.getName() + " ");
+                }
                 map.get(counter).invoke(inClass);
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
@@ -88,6 +103,10 @@ public class TestEngine {
                         throw new RuntimeException("Метод с аннотацией AfterSuite должен быть единственным!");
                     }
                     System.out.println(o);
+                    Class[] paramTypes = o.getParameterTypes();
+                    for (Class paramType : paramTypes) {
+                        System.out.print(paramType.getName() + " ");
+                    }
                     o.invoke(inClass);
                     flagOnly=true;
                 } catch (IllegalAccessException e) {
@@ -98,5 +117,17 @@ public class TestEngine {
             }
         }
 
+    }
+
+    public static void start(String inClassName){
+        start(inClassName,new Object[][]{{}});
+    }
+
+    public static void start(String inClassName,Object[][] params){
+        try {
+            start(Class.forName(inClassName),params);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }
